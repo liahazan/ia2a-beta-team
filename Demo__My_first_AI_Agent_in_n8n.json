@@ -1,0 +1,471 @@
+{
+  "name": "Demo: My first AI Agent in n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b24b05a7-d802-4413-bfb1-23e1e76f6203",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        -100
+      ],
+      "webhookId": "a889d2ae-2159-402f-b326-5f61e90f602e"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "d5e60eb2-267c-4f68-aefe-439031bcaceb",
+      "name": "OpenAI Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        780,
+        420
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "PHkeCfRt9abZcXeh",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1Y0kky4CuTJYRtMqXZpnk0mwjJTNJbyrS",
+          "mode": "list",
+          "cachedResultName": "202401_NFs_Cabecalho.csv",
+          "cachedResultUrl": "https://drive.google.com/file/d/1Y0kky4CuTJYRtMqXZpnk0mwjJTNJbyrS/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        220,
+        -260
+      ],
+      "id": "d83ec46a-32e3-4249-9c29-216aa9b65328",
+      "name": "Google Drive Cabecalho",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "gTwTda9nAcvGYzjc",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1WTSgaj9fh7bXQmSA_XBL9AIuBQWxwTnQ",
+          "mode": "list",
+          "cachedResultName": "202401_NFs_Itens.csv",
+          "cachedResultUrl": "https://drive.google.com/file/d/1WTSgaj9fh7bXQmSA_XBL9AIuBQWxwTnQ/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        220,
+        40
+      ],
+      "id": "1e89cbb6-1af7-448e-8733-1785e8e8db6d",
+      "name": "Google Drive1 Itens",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "gTwTda9nAcvGYzjc",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -260
+      ],
+      "id": "4a5ba6e0-a37e-42c6-841a-ea116da26942",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        440,
+        40
+      ],
+      "id": "4ac2db9f-541e-4aa5-b87d-37b4a19547ac",
+      "name": "Extract from File2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "['CHAVE DE ACESSO']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        740,
+        -100
+      ],
+      "id": "64cf0edf-f031-43ce-84ae-314169ac9aaf",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "notas_fiscais",
+          "mode": "list",
+          "cachedResultName": "notas_fiscais"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "chave_acesso",
+        "valueToMatchOn": "={{ $json['CHAVE DE ACESSO'] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "valor_total",
+              "value": "={{ $json['VALOR TOTAL']}}"
+            },
+            {
+              "column": "modelo",
+              "value": "={{ $json [ 'MODELO'] }}"
+            },
+            {
+              "column": "serie",
+              "value": "={{ $json['SÉRIE'] }}"
+            },
+            {
+              "column": "numero",
+              "value": "={{ $json['NÚMERO'] }}"
+            },
+            {
+              "column": "natureza_operacao",
+              "value": "={{ $json['NATUREZA DA OPERAÇÃO'] }}"
+            },
+            {
+              "column": "data_emissao",
+              "value": "={{ $json['DATA EMISSÃO'] }}"
+            },
+            {
+              "column": "cpf_cnpj_emitente",
+              "value": "={{ $json['CPF/CNPJ Emitente'] }}"
+            },
+            {
+              "column": "razao_social_emitente",
+              "value": "={{ $json['RAZÃO SOCIAL EMITENTE'] }}"
+            },
+            {
+              "column": "inscricao_estadual_emitente",
+              "value": "={{ $json['INSCRIÇÃO ESTADUAL EMITENTE'] }}"
+            },
+            {
+              "column": "municipio_emitente",
+              "value": "={{ $json[ 'MUNICÍPIO EMITENTE' ] }}"
+            },
+            {
+              "column": "cnpj_destinatario",
+              "value": "={{ $json[ 'CNPJ DESTINATÁRIO' ] }}"
+            },
+            {
+              "column": "nome_destinatario",
+              "value": "={{ $json[ 'NOME DESTINATÁRIO' ] }}"
+            },
+            {
+              "column": "uf_destinatario",
+              "value": "={{ $json[ 'UF DESTINATÁRIO' ] }}"
+            },
+            {
+              "column": "indicador_ie_destinatario",
+              "value": "={{ $json[ 'INDICADOR IE DESTINATÁRIO' ] }}"
+            },
+            {
+              "column": "destino_operacao",
+              "value": "={{ $json[ 'DESTINO DA OPERAÇÃO' ] }}"
+            },
+            {
+              "column": "consumidor_final",
+              "value": "={{ $json[ 'CONSUMIDOR FINAL' ] }}"
+            },
+            {
+              "column": "presenca_comprador",
+              "value": "={{ $json[ 'PRESENÇA DO COMPRADOR' ] }}"
+            },
+            {
+              "column": "numero_produto",
+              "value": "={{ $json [ 'NÚMERO PRODUTO' ] }}"
+            },
+            {
+              "column": "descricao_produto",
+              "value": "={{ $json[ 'DESCRIÇÃO DO PRODUTO/SERVIÇO'] }}"
+            },
+            {
+              "column": "codigo_ncm",
+              "value": "={{ $json[ 'CÓDIGO NCM/SH'] }}"
+            },
+            {
+              "column": "ncm_tipo_produto",
+              "value": "={{ $json[ 'NCM/SH (TIPO DE PRODUTO)'] }}"
+            },
+            {
+              "column": "cfop",
+              "value": "={{ $json[ 'CFOP'] }}"
+            },
+            {
+              "column": "quantidade",
+              "value": "={{ $json ['QUANTIDADE'] }}"
+            },
+            {
+              "column": "unidade",
+              "value": "={{ $json[ 'UNIDADE'] }}"
+            },
+            {
+              "column": "valor_unitario",
+              "value": "={{ $json[ 'VALOR UNITÁRIO'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        980,
+        -100
+      ],
+      "id": "d4659011-f599-4649-b9ad-c66bc7519d67",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "Yp99UbqZx5G8EcHv",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an SQL assistant for MySQL.\n\nYour task is to convert questions written in Portugues into a valid and efficient SQL queries for a single table named: 'notas_fiscais'.\n This  table contains the following columns:\n \n+-----------------------------+---------------+------+-----+---------+-------+\n| Field                       | Type          | Null | Key | Default | Extra |\n+-----------------------------+---------------+------+-----+---------+-------+\n| chave_acesso                | varchar(255)  | NO   | PRI | NULL    |       |\n| modelo                      | text          | YES  |     | NULL    |       |\n| serie                       | text          | YES  |     | NULL    |       |\n| numero                      | text          | YES  |     | NULL    |       |\n| natureza_operacao           | text          | YES  |     | NULL    |       |\n| data_emissao                | datetime      | YES  |     | NULL    |       |\n| cpf_cnpj_emitente           | text          | YES  |     | NULL    |       |\n| razao_social_emitente       | text          | YES  |     | NULL    |       |\n| inscricao_estadual_emitente | text          | YES  |     | NULL    |       |\n| uf_emitente                 | text          | YES  |     | NULL    |       |\n| municipio_emitente          | text          | YES  |     | NULL    |       |\n| cnpj_destinatario           | text          | YES  |     | NULL    |       |\n| nome_destinatario           | text          | YES  |     | NULL    |       |\n| uf_destinatario             | text          | YES  |     | NULL    |       |\n| indicador_ie_destinatario   | text          | YES  |     | NULL    |       |\n| destino_operacao            | text          | YES  |     | NULL    |       |\n| consumidor_final            | text          | YES  |     | NULL    |       |\n| presenca_comprador          | text          | YES  |     | NULL    |       |\n| numero_produto              | text          | YES  |     | NULL    |       |\n| descricao_produto           | text          | YES  |     | NULL    |       |\n| codigo_ncm                  | text          | YES  |     | NULL    |       |\n| ncm_tipo_produto            | text          | YES  |     | NULL    |       |\n| cfop                        | text          | YES  |     | NULL    |       |\n| quantidade                  | decimal(15,4) | YES  |     | NULL    |       |\n| unidade                     | text          | YES  |     | NULL    |       |\n| valor_unitario              | text          | YES  |     | NULL    |       |\n| valor_total                 | text          | YES  |     | NULL    |       |\n+-----------------------------+---------------+------+-----+---------+-------+\n\t\t\t\t\t\n\nSemanic mapping:\n- \"nota fiscal\", \"nota\", \"NF\" -> refers to unique invoices identified by 'chave_acesso\n- \"valor da nota\", \"valor total de nota fiscal \" -> refers to 'valor_nota_fiscal'\n_ \"produto\" -> refers to 'descricao_produto_servico'\n- \"quem vendeu mias\" -> analyze 'razao_social_emitente' with 'SUM(valor_nota_fiscal)'\n\nImportant logic:\n-when counting invoices (\"notas fiscais\"), always use: COUNT(DISTINCT chave_acesso)\n- Every SQL statement **must start with SELECT** - never omit it.\n- Only retur one single SQL query per answer.\n\nStrict instructions:\n- All data is in a **single table**. Do not use JOINs.\n- Use **only the columns listed above**. Do not invent or assume columns.\n- Do not include SQL comments (e.g. '-- ...').\n- Do not use Markdown formattin (e.g triple backticks).\n- Respond with **only the SQL query**, clean and ready to execute - noexplanations.\n- Only create query, never updates, creates or deletes.\n\nUser question (in Portuguese)\n{{ $json.chatInput }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        780,
+        180
+      ],
+      "id": "602c899a-bda5-4bd0-9467-2c6d3a1df0ce",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "{{ $json[\"text\"] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1160,
+        180
+      ],
+      "id": "901972c4-1bf5-4d91-8859-1956f1c40e6f",
+      "name": "MySQL1",
+      "credentials": {
+        "mySql": {
+          "id": "Yp99UbqZx5G8EcHv",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um assistente especializado em comunicação clara e natural com usuários de sistemas de análise de dados.\n\nSua tarefa é gerar uma resposta textual objetiva e amigável com base em:\n\n1. A pergunta feita pelo usuário\n2. O resultado exato da consulta, que pode conter números, nomes ou ambos\n\n---\n\nPergunta do usuário: {{ $('When chat message received').item.json.chatInput }}\n\nResultado da consulta (formato JSON): {{ JSON.stringify($json) }}\n\n---\n\nRegras obrigatórias para gerar a resposta:\n\n- Responda diretamente à pergunta com base **somente** nos dados fornecidos.\n- **Nunca invente informações ou faça suposições.**\n- Se o resultado tiver múltiplos campos (ex: nome da empresa e valor), use ambos corretamente na resposta.\n- Sempre formate os números corretamente:\n  - Para valores monetários, use \"R$\" com **duas casas decimais** e separador de milhar.  \n    Ex: \"Foram emitidas 1.250 notas fiscais.\"\n  - Se o valor for zero, diga isso claramente:  \n    Ex: \"Nenhuma nota foi registrada nesse período.\"  \n    Ex: \"Nenhuma rota foi registrada neste período.\"\n- Se o resultado tiver um nome (ex: de empresa ou produto), inclua ele naturalmente na resposta, sem aspas.\n\n---\n\nExemplos:\n\n- Pergunta: \"Qual a empresa que mais vendeu?\"  \n  Resultado:  \n  `{ \"razao_social_emitente\": \"Editora FTD S.A.\", \"total vendas\": 122949992.01 }`  \n  Resposta: A empresa que vendeu mais foi Editora FTD S.A., com um total de R$ 12.294.992,01 em vendas.\n\n- Pergunta: \"Qual o valor das notas emitidas?\"  \n  Resultado: `153200.75`  \n  Resposta: O valor total das notas emitidas foi de R$ 153.200,75.\n\n- Pergunta: \"Quantas notas fiscais foram emitidas?\"  \n  Resultado: `0`  \n  Resposta: Nenhuma nota fiscal foi emitida no período analisado.\n\n- Pergunta: \"Qual o número da nota fiscal com o maior valor?\"  \n  Resultado: `982145`  \n  Resposta: A nota fiscal com maior valor tem o número 982145.\n\n---\n\nSua resposta final deve ser apenas texto, com clareza, precisão e formatação correta.  \nNão use prefixos, markdown ou explicações adicionais.\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1400,
+        180
+      ],
+      "id": "14cbd7e9-e09f-4077-986f-719693dc38f3",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "0592b871-8fff-4a9c-b412-4557bcac4591",
+      "name": "OpenAI Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        400
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "PHkeCfRt9abZcXeh",
+          "name": "OpenAi account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Google Drive Cabecalho",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Drive1 Itens",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Cabecalho": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1 Itens": {
+      "main": [
+        [
+          {
+            "node": "Extract from File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c493b568-c8d8-486c-b4e1-69804cc117ea",
+  "meta": {
+    "templateId": "self-building-ai-agent",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4127dc6cb15924880325b91d4006032981d762426d9b7889edf3cf1e8f602bae"
+  },
+  "id": "ME3vsww6Fh6bM9ic",
+  "tags": []
+}
